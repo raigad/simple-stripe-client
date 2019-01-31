@@ -44,9 +44,6 @@ class Api(object):
         self._session = requests.Session()
         self._session.headers.update({'Authorization': 'Bearer ' + self.api_key})
 
-    def get_charge(self):
-        print("Calling method get_charge")
-
     def __getattr__(self, attribute):
         """
         Intercepts every call to atrribute that does not exists
@@ -56,17 +53,10 @@ class Api(object):
         if attribute in self.resources:
             self.url = '/'.join([self.url, attribute])
             return self
-        elif attribute in ['getx', 'postx']:
-            print("making request " + attribute)
-            print(type(attribute))
-            print("URL=" + self.url)
-            response = self._make_request(attribute, self.url)
-            return self._parse_json_data(response.content.decode('utf-8'))
         else:
             raise AttributeError(attribute)
 
     def get(self):
-        print("making get request url=" + self.url)
         response = self._make_request('get', self.url)
         return self._parse_json_data(response.content.decode('utf-8'))
 
@@ -81,7 +71,7 @@ class Api(object):
         if not data:
             data = {}
 
-        response = 0
+        response = {}
         if http_method == 'get':
             url = self._build_url(url, extra_params=data)
             response = self._session.get(url, timeout=self._timeout)
