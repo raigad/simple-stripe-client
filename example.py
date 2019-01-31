@@ -5,8 +5,10 @@ import simple_stripe_client
 
 print(config('STRIPE_SECRET_KEY'))
 
-stripe_api = simple_stripe_client.Api(debug_http=True)
+stripe_api = simple_stripe_client.Api(config('STRIPE_SECRET_KEY'),debug_http=True)
 
-result = stripe_api.charges
+data = stripe_api.charges.get()
 
-print(result.url)
+print("\n\n\n")
+print(data)
+

@@ -18,18 +18,19 @@ API_VERSION = 'v1'
 
 
 class Api(object):
-    def __init__(self, debug_http=False, timeout=None, base_url=None, api_version=None):
+    def __init__(self, api_key, debug_http=False, timeout=None, base_url=None, api_version=None):
+        self.api_key = api_key
         self._debug_http = debug_http
         self._timeout = timeout
         self.resources = Constants.resources
-        self.url = None
+        self.url = ''
         if base_url:
             self.base_url = base_url
         else:
             self.base_url = API_BASE_URL
 
         if api_version:
-            self.base_url = '/'.join([self.base_url , api_version])
+            self.base_url = '/'.join([self.base_url, api_version])
         else:
             self.base_url = '/'.join([self.base_url, API_VERSION])
 
@@ -41,10 +42,10 @@ class Api(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
         self._session = requests.Session()
+        self._session.headers.update({'Authorization': 'Bearer ' + self.api_key})
 
     def get_charge(self):
         print("Calling method get_charge")
-
 
     def __getattr__(self, attribute):
         """
@@ -53,10 +54,21 @@ class Api(object):
         :return:
         """
         if attribute in self.resources:
-            self.url = '/'.join([self.url or self.base_url, attribute])
+            self.url = '/'.join([self.url, attribute])
             return self
+        elif attribute in ['getx', 'postx']:
+            print("making request " + attribute)
+            print(type(attribute))
+            print("URL=" + self.url)
+            response = self._make_request(attribute, self.url)
+            return self._parse_json_data(response.content.decode('utf-8'))
         else:
             raise AttributeError(attribute)
+
+    def get(self):
+        print("making get request url=" + self.url)
+        response = self._make_request('get', self.url)
+        return self._parse_json_data(response.content.decode('utf-8'))
 
     def _make_request(self, http_method, url, data=None, json=None):
         """
@@ -70,10 +82,10 @@ class Api(object):
             data = {}
 
         response = 0
-        if http_method == 'GET':
+        if http_method == 'get':
             url = self._build_url(url, extra_params=data)
             response = self._session.get(url, timeout=self._timeout)
-        elif http_method == 'POST':
+        elif http_method == 'post':
             url = self._build_url(url)
             if data:
                 response = self._session.post(url, data=data, timeout=self._timeout)
