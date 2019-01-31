@@ -1,6 +1,7 @@
 import requests
 import logging
 import json
+from simple_stripe_client.resources import Constants
 
 try:
     # python 3
@@ -9,25 +10,28 @@ try:
 except ImportError:
     # python 2
     import httplib as http_client
-    from urlparse import urlparse, urlunparse
+    # from urlparse import urlparse, urlunparse
     from urllib import urlencode
 
 API_BASE_URL = 'https://api.stripe.com'
-API_VERSION  = 'v1'
+API_VERSION = 'v1'
+
 
 class Api(object):
-    def __init__(self, debug_http=False, timeout=None, base_url=None,api_version=None):
+    def __init__(self, debug_http=False, timeout=None, base_url=None, api_version=None):
         self._debug_http = debug_http
         self._timeout = timeout
+        self.resources = Constants.resources
+        self.url = None
         if base_url:
             self.base_url = base_url
         else:
             self.base_url = API_BASE_URL
 
         if api_version:
-            self.base_url + '/' + api_version
+            self.base_url = '/'.join([self.base_url , api_version])
         else:
-            self.base_url + '/' + API_VERSION
+            self.base_url = '/'.join([self.base_url, API_VERSION])
 
         if debug_http:
             http_client.HTTPConnection.debuglevel = 1
@@ -40,6 +44,19 @@ class Api(object):
 
     def get_charge(self):
         print("Calling method get_charge")
+
+
+    def __getattr__(self, attribute):
+        """
+        Intercepts every call to atrribute that does not exists
+        :param attribute:
+        :return:
+        """
+        if attribute in self.resources:
+            self.url = '/'.join([self.url or self.base_url, attribute])
+            return self
+        else:
+            raise AttributeError(attribute)
 
     def _make_request(self, http_method, url, data=None, json=None):
         """

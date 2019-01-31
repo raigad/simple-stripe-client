@@ -1,8 +1,12 @@
 #!/usr/bin/env python
-
+from decouple import config
 import simple_stripe_client
 
 
+print(config('STRIPE_SECRET_KEY'))
+
 stripe_api = simple_stripe_client.Api(debug_http=True)
 
-stripe_api.get_charge()
+result = stripe_api.charges
+
+print(result.url)
