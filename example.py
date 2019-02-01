@@ -46,18 +46,19 @@ customer_id = 'cus_AUVASurSCMYLb7'
 # print(data['metadata'])
 
 ##Create new charge
-# CHARGE_DATA = {
-#     'amount': 2100,
-#     'currency': 'gbp',
-#     'source': 'tok_amex',
-#     'metadata': {
-#         'first_name' : 'rohit',
-#         'meta_1' : 123,
-#     }
-# }
+CHARGE_DATA = {
+    'amount': 15921,
+    'currency': 'gbp',
+    'source': 'tok_amex',
+    'capture' : False,
+    'metadata': {
+        'first_name' : 'rohit',
+        'meta_1' : 123,
+    }
+}
 #
-# charge = stripe_api.charges.post(**CHARGE_DATA)
-# print(charge)
+charge = stripe_api.charges.post(**CHARGE_DATA)
+print(charge)
 
 
 # charge_id = 'ch_1A9W9lJKzeKazErx0YGhbt0l'

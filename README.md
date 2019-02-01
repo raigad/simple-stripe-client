@@ -57,6 +57,10 @@ stripe_api.invoices.id(INVOICE_ID)                  # == /v1/invoices/{INVOICE_I
 
 ```
 
+# TODO
+ * Add support for Stripe Connect, Files
+ * Add more extensive tests
+
 # Changelog -
 
 # 0.0.1 (01-02-2019)
