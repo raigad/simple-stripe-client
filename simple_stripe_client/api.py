@@ -70,7 +70,6 @@ class Api(object):
 
     def post(self,**kwargs):
         print("url=" + self.url)
-        print(kwargs)
         return self._make_request('POST', self._get_and_reset_url(), data=kwargs)
 
     def put(self):
@@ -95,12 +94,14 @@ class Api(object):
         if not data:
             data = {}
 
+        data = self.__class__._parse_request_data(data)
         response = {}
         if http_method == 'GET':
             url = self._build_url(url, extra_params=data)
             response = self._session.get(url, timeout=self._timeout)
         elif http_method == 'POST':
             url = self._build_url(url)
+
             if json:
                 response = self._session.post(url, json=json, timeout=self._timeout)
             else:
@@ -143,3 +144,17 @@ class Api(object):
         except ValueError:
             data = json.loads('{"Error": "Unknown error while parsing response"}')
         return data
+
+    @staticmethod
+    def _parse_request_data(data):
+        pd = {}
+        for key,value in data.items():
+            if isinstance(value,dict):
+                npd = {}
+                for k , v in value.items():
+                    npd_key = "{key}[{k}]".format(key=key,k=k)
+                    npd[npd_key] = v
+                pd.update(__class__._parse_request_data(npd))
+            else:
+                pd.update({ key : value })
+        return pd

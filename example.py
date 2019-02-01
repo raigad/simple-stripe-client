@@ -12,21 +12,25 @@ print("\n\n\n")
 # print(stripe_api.charges.get)
 
 # data = stripe_api.charges.get(limit=1)
-# print("\n\n\n")
-# print(data)
+data = stripe_api.charges.id('ch_1Dz60xJKzeKazErxinipPnZa').get()
+print("\n\n\n")
+print(data)
+print("\n\n\n")
+print(data['metadata'])
 
 ##Create new charge
-CHARGE_DATA = {
-    'amount': 2100,
-    'currency': 'gbp',
-    'source': 'tok_amex',
-    'metadata': {
-        'first_name' : 'rohit',
-        'meta_1' : 123
-    }
-}
-charge = stripe_api.charges.post(**CHARGE_DATA)
-print(charge)
+# CHARGE_DATA = {
+#     'amount': 2100,
+#     'currency': 'gbp',
+#     'source': 'tok_amex',
+#     'metadata': {
+#         'first_name' : 'rohit',
+#         'meta_1' : 123,
+#     }
+# }
+#
+# charge = stripe_api.charges.post(**CHARGE_DATA)
+# print(charge)
 
 
 # charge_id = 'ch_1A9W9lJKzeKazErx0YGhbt0l'
