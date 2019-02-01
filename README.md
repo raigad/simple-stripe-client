@@ -1,9 +1,7 @@
 # simple-stripe-client
-A simple lightweight api client for awesome stripe
+A simple lightweight api client for awesome stripe.
 
-
- Example
------------
+# Example
 
 ```python
 import simple_stripe_client
@@ -40,3 +38,26 @@ charge = stripe_api.charges.id(CHARGE_ID).capture.post(amount=12000)
 
 ```
 
+# Building Stripe's Curl URLs
+
+
+URLs would match one-to-one to stripe's curl api urls.
+For more links please refer to [stripe doc](https://stripe.com/docs/api?lang=curl)
+
+```
+
+stripe_api.charges                                  # == /v1/charges
+stripe_api.charges.id(CHARGE_ID)                    # == /v1/charges/{CHARGE_ID}    
+
+stripe_api.customers                                # == /v1/customers
+stripe_api.customers.id(CUSTOMER_ID)                # == /v1/customers/{CUSTOMER_ID}
+
+stripe_api.invoices                                 # == /v1/invoices
+stripe_api.invoices.id(INVOICE_ID)                  # == /v1/invoices/{INVOICE_ID}
+
+```
+
+# Changelog -
+
+# 0.0.1 (01-02-2019)
+ * initial release
