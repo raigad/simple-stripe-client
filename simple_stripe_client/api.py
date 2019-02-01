@@ -1,7 +1,6 @@
 import requests
 import logging
 import json
-from simple_stripe_client.resources import Constants
 
 try:
     # python 3
@@ -22,7 +21,6 @@ class Api(object):
         self.api_key = api_key
         self._debug_http = debug_http
         self._timeout = timeout
-        self.resources = Constants.resources
         self.url = ''
 
         if base_url:
@@ -51,11 +49,8 @@ class Api(object):
         Intercepts every call to attribute that does not exists
 
         """
-        if attribute in self.resources:
-            self.url = '/'.join([self.url, attribute])
-            return self
-        else:
-            raise AttributeError(attribute)
+        self.url = '/'.join([self.url, attribute])
+        return self
 
     def id(self, value):
         self.url = '/'.join([self.url, value])
