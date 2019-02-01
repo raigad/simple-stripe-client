@@ -6,7 +6,7 @@ import simple_stripe_client
 
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
-stripe_api = simple_stripe_client.Api(STRIPE_SECRET_KEY, debug_http=False)
+stripe_api = simple_stripe_client.Api(STRIPE_SECRET_KEY, debug_http=True)
 
 CUSTOMER_DATA ={
 
@@ -16,7 +16,12 @@ CUSTOMER_DATA ={
 #customer = stripe_api.customers.post()
 
 #update customer
-# customer_id = 'cus_ES1PhnptJ15cIo'
+customer_id = 'cus_AUVASurSCMYLb7'
+
+#get bank accounts
+#accounts = stripe_api.customers.id(customer_id).sources.get(object='bank_account',limit=3)
+#print(accounts)
+
 # customer = stripe_api.customers.id(customer_id).post(description="This is the test customer created",metadata={ 'name' : 'RohitX', 'customer_id' : 123,'last_name':'desf'},email='rohit@example.com')
 # print(customer)
 #
