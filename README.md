@@ -2,27 +2,41 @@
 A simple lightweight api client for awesome stripe
 
 
-Quick Usage
+ Example
 -----------
 
 ```python
 import simple_stripe_client
+import os
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+# create client
+stripe_api = simple_stripe_client.Api(STRIPE_SECRET_KEY, debug_http=True)
 
-# blocking client
-stripe_api = simple_stripe_client.Api('api_key', debug_http=True)
 
-DUMMY_PLAN = {
-    'amount': 200,
-    'interval': 'month',
-    'name': 'Amazing Stripe test Basic Plan',
+CHARGE_DATA = {
+    'amount': 15921,
     'currency': 'gbp',
-    'id': 'stripe-test-plan-basic'
+    'capture' : False,
+    'source': 'tok_amex',
+    'metadata': {
+        'first_name' : 'Sachin',
+        'last_name'  : 'Tendulkar',
+    } 
 }
 
-# Creating Stripe plan
-stripe_api.plans.post(**DUMMY_PLAN)
+# Creating Charge
+charge = stripe_api.charges.post(**CHARGE_DATA)
 
-# Fetching Stripe plan
-plan = stripe_api.plans.id(DUMMY_PLAN['id']).get()
+CHARGE_ID = 'ch_xxx'
+# Fetching Charge
+charge = stripe_api.charges.id(CHARGE_ID).get()
+
+# Update Charge
+charge = stripe_api.charges.id(CHARGE_ID).post(description='Test Update')
+
+# Capture Charge
+charge = stripe_api.charges.id(CHARGE_ID).capture.post(amount=12000)
+
 
 ```
+
