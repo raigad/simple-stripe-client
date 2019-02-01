@@ -52,6 +52,9 @@ class Api(object):
         self.url = '/'.join([self.url, attribute])
         return self
 
+    def __repr__(self):
+        return "{cls}(api_key={api_key},url={url})".format(cls=self.__class__, api_key=self.api_key, url=self.url)
+
     def id(self, value):
         self.url = '/'.join([self.url, value])
         return self
