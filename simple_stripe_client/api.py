@@ -60,18 +60,18 @@ class Api(object):
         return self
 
     def get(self, **kwargs):
-        return self._make_request('GET', self._get_and_reset_url(), data=kwargs)
+        return self._make_request('GET', self.get_and_reset_url(), data=kwargs)
 
     def post(self, **kwargs):
-        return self._make_request('POST', self._get_and_reset_url(), data=kwargs)
+        return self._make_request('POST', self.get_and_reset_url(), data=kwargs)
 
     def put(self, **kwargs):
-        return self._make_request('PUT', self._get_and_reset_url(), data=kwargs)
+        return self._make_request('PUT', self.get_and_reset_url(), data=kwargs)
 
     def delete(self):
-        return self._make_request('DELETE', self._get_and_reset_url())
+        return self._make_request('DELETE', self.get_and_reset_url())
 
-    def _get_and_reset_url(self):
+    def get_and_reset_url(self):
         url = self.url
         self.url = ''
         return url
