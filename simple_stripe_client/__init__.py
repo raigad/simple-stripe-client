@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""A library that provides a Python interface to the postcodes_io API."""
+"""A library that provides a Python interface to the stripe's API."""
 __author__ = 'Rohit Deshmukh'
 __email__ = 'raigad1630@gmail.com'
 __version__ = '0.0.1'
