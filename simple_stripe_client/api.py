@@ -10,7 +10,7 @@ try:
 except ImportError:
     # python 2
     import httplib as http_client
-    # from urlparse import urlparse, urlunparse
+    from urlparse import urlparse, urlunparse
     from urllib import urlencode
 
 API_BASE_URL = 'https://api.stripe.com'
@@ -67,11 +67,11 @@ class Api(object):
     def post(self, **kwargs):
         return self._make_request('POST', self._get_and_reset_url(), data=kwargs)
 
-    def put(self):
-        pass
+    def put(self, **kwargs):
+        return self._make_request('PUT', self._get_and_reset_url(), data=kwargs)
 
     def delete(self):
-        pass
+        return self._make_request('PUT', self._get_and_reset_url())
 
     def _get_and_reset_url(self):
         url = self.url
@@ -90,17 +90,16 @@ class Api(object):
             data = {}
 
         data = self.__class__._prepare_nested_data(data)
+
         response = {}
         if http_method == 'GET':
-            url = self._build_url(url, extra_params=data)
-            response = self._session.get(url, timeout=self._timeout)
+            response = self._session.get(self._build_url(url, extra_params=data), timeout=self._timeout)
         elif http_method == 'POST':
-            url = self._build_url(url)
-
-            if json:
-                response = self._session.post(url, json=json, timeout=self._timeout)
-            else:
-                response = self._session.post(url, data=data, timeout=self._timeout)
+            response = self._session.post(self._build_url(url), data=data, timeout=self._timeout)
+        elif http_method == 'PUT':
+            response = self._session.put(self._build_url(url), data=data, timeout=self._timeout)
+        elif http_method == 'DELETE':
+            response = self._session.delete(self._build_url(url), timeout=self._timeout)
 
         try:
             response = self.__class__._parse_json_data(response.content.decode('utf-8'))
