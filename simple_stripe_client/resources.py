@@ -3,5 +3,12 @@ class Constants(object):
         'balance',
         'charges',
         'customers',
+        'disputes',
+        'events',
+        'payment_intents',
+        'payouts',
+        'products',
+        'refunds',
+        'tokens',
         'plans',
     }
