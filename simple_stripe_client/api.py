@@ -48,9 +48,8 @@ class Api(object):
 
     def __getattr__(self, attribute):
         """
-        Intercepts every call to atrribute that does not exists
-        :param attribute:
-        :return:
+        Intercepts every call to attribute that does not exists
+
         """
         if attribute in self.resources:
             self.url = '/'.join([self.url, attribute])
@@ -58,18 +57,14 @@ class Api(object):
         else:
             raise AttributeError(attribute)
 
-    def id(self,value):
-        self.url = '/'.join([self.url,value])
+    def id(self, value):
+        self.url = '/'.join([self.url, value])
         return self
 
+    def get(self, **kwargs):
+        return self._make_request('GET', self._get_and_reset_url(), data=kwargs)
 
-    def get(self,**kwargs):
-        print("url="+self.url)
-        print(kwargs)
-        return self._make_request('GET', self._get_and_reset_url(),data=kwargs)
-
-    def post(self,**kwargs):
-        print("url=" + self.url)
+    def post(self, **kwargs):
         return self._make_request('POST', self._get_and_reset_url(), data=kwargs)
 
     def put(self):
@@ -94,7 +89,7 @@ class Api(object):
         if not data:
             data = {}
 
-        data = self.__class__._parse_request_data(data)
+        data = self.__class__._prepare_nested_data(data)
         response = {}
         if http_method == 'GET':
             url = self._build_url(url, extra_params=data)
@@ -125,7 +120,6 @@ class Api(object):
                 query += '&' + extra_query
             else:
                 query = extra_query
-        print(url+'?'+query)
         return urlunparse((scheme, netloc, path, params, query, fragment))
 
     @staticmethod
@@ -146,15 +140,22 @@ class Api(object):
         return data
 
     @staticmethod
-    def _parse_request_data(data):
-        pd = {}
-        for key,value in data.items():
-            if isinstance(value,dict):
-                npd = {}
-                for k , v in value.items():
-                    npd_key = "{key}[{k}]".format(key=key,k=k)
-                    npd[npd_key] = v
-                pd.update(__class__._parse_request_data(npd))
+    def _prepare_nested_data(data):
+        """
+        Converted nested dict into one key=value dict
+        { 'A' :  65, 'B' : 66, 'nested' : { 'C' : 67 , 'D' : 68  }  }
+        To
+        { 'A' :  65, 'B' : 66, 'nested[C]' :  67 , 'nested[D]' : 68  }
+
+        """
+        processed_data = {}
+        for key, value in data.items():
+            if isinstance(value, dict):
+                nested_data = {}
+                for k, v in value.items():
+                    nested_key = "{key}[{k}]".format(key=key, k=k)
+                    nested_data[nested_key] = v
+                processed_data.update(__class__._prepare_nested_data(nested_data))
             else:
-                pd.update({ key : value })
-        return pd
+                processed_data.update({key: value})
+        return processed_data
