@@ -152,7 +152,7 @@ class Api(object):
                 for k, v in value.items():
                     nested_key = "{key}[{k}]".format(key=key, k=k)
                     nested_data[nested_key] = v
-                processed_data.update(__class__._prepare_nested_data(nested_data))
+                processed_data.update(Api._prepare_nested_data(nested_data))
             else:
                 processed_data.update({key: value})
         return processed_data
