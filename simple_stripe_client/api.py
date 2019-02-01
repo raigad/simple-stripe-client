@@ -71,11 +71,11 @@ class Api(object):
         return self._make_request('PUT', self._get_and_reset_url(), data=kwargs)
 
     def delete(self):
-        return self._make_request('PUT', self._get_and_reset_url())
+        return self._make_request('DELETE', self._get_and_reset_url())
 
     def _get_and_reset_url(self):
         url = self.url
-        self.url = None
+        self.url = ''
         return url
 
     def _make_request(self, http_method, url, data=None, json=None):

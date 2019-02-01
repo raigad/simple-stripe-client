@@ -8,15 +8,35 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
 stripe_api = simple_stripe_client.Api(STRIPE_SECRET_KEY, debug_http=False)
 
-print("\n\n\n")
-# print(stripe_api.charges.get)
+CUSTOMER_DATA ={
 
+}
+
+#create customer
+#customer = stripe_api.customers.post()
+
+#update customer
+# customer_id = 'cus_ES1PhnptJ15cIo'
+# customer = stripe_api.customers.id(customer_id).post(description="This is the test customer created",metadata={ 'name' : 'RohitX', 'customer_id' : 123,'last_name':'desf'},email='rohit@example.com')
+# print(customer)
+#
+#DELETE Customer
+# customer_del = stripe_api.customers.id(customer_id).delete()
+# print("\n\n\n\n")
+# print(customer_del)
+
+
+#print("\n\n\n")
+# print(stripe_api.charges.get)
 # data = stripe_api.charges.get(limit=1)
-data = stripe_api.charges.id('ch_1Dz60xJKzeKazErxinipPnZa').get()
-print("\n\n\n")
-print(data)
-print("\n\n\n")
-print(data['metadata'])
+#charge_id = 'ch_1Dz60xJKzeKazErxinipPnZa'
+#data = stripe_api.charges.id(charge_id).post(description='this is test description x')
+#print(data)
+#data = stripe_api.charges.id(charge_id).get()
+#print("\n\n\n")
+#print(data['description'])
+#print("\n\n\n")
+#print(data['metadata'])
 
 ##Create new charge
 # CHARGE_DATA = {

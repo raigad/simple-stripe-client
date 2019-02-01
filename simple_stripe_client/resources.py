@@ -1,6 +1,7 @@
-
 class Constants(object):
-    resources = set([
+    resources = {
+        'balance',
         'charges',
-        'plans'
-    ])
+        'customers',
+        'plans',
+    }
