@@ -57,8 +57,13 @@ class Api(object):
             raise AttributeError(attribute)
 
     def get(self):
-        response = self._make_request('get', self.url)
+        response = self._make_request('GET', self._get_and_reset_url())
         return self._parse_json_data(response.content.decode('utf-8'))
+
+    def _get_and_reset_url(self):
+        url = self.url
+        self.url = None
+        return url
 
     def _make_request(self, http_method, url, data=None, json=None):
         """
@@ -72,15 +77,16 @@ class Api(object):
             data = {}
 
         response = {}
-        if http_method == 'get':
+        if http_method == 'GET':
             url = self._build_url(url, extra_params=data)
             response = self._session.get(url, timeout=self._timeout)
-        elif http_method == 'post':
+        elif http_method == 'POST':
             url = self._build_url(url)
             if data:
                 response = self._session.post(url, data=data, timeout=self._timeout)
             elif json:
                 response = self._session.post(url, json=json, timeout=self._timeout)
+
         return response
 
     def _build_url(self, url, path_elements=None, extra_params=None):
