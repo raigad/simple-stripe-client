@@ -62,6 +62,8 @@ stripe_api.invoices.id(INVOICE_ID)                  # == /v1/invoices/{INVOICE_I
  * Add more extensive tests
 
 # Changelog -
+# 0.0.2 (01-02-2019)
+ * fixed issue for python 2
 
 # 0.0.1 (01-02-2019)
  * initial release
