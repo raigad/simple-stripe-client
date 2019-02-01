@@ -24,6 +24,7 @@ class Api(object):
         self._timeout = timeout
         self.resources = Constants.resources
         self.url = ''
+
         if base_url:
             self.base_url = base_url
         else:
@@ -41,6 +42,7 @@ class Api(object):
             requests_log = logging.getLogger("requests.packages.urllib3")
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
+
         self._session = requests.Session()
         self._session.headers.update({'Authorization': 'Bearer ' + self.api_key})
 
@@ -56,9 +58,26 @@ class Api(object):
         else:
             raise AttributeError(attribute)
 
-    def get(self):
-        response = self._make_request('GET', self._get_and_reset_url())
-        return self._parse_json_data(response.content.decode('utf-8'))
+    def id(self,value):
+        self.url = '/'.join([self.url,value])
+        return self
+
+
+    def get(self,**kwargs):
+        print("url="+self.url)
+        print(kwargs)
+        return self._make_request('GET', self._get_and_reset_url(),data=kwargs)
+
+    def post(self,**kwargs):
+        print("url=" + self.url)
+        print(kwargs)
+        return self._make_request('POST', self._get_and_reset_url(), data=kwargs)
+
+    def put(self):
+        pass
+
+    def delete(self):
+        pass
 
     def _get_and_reset_url(self):
         url = self.url
@@ -82,10 +101,15 @@ class Api(object):
             response = self._session.get(url, timeout=self._timeout)
         elif http_method == 'POST':
             url = self._build_url(url)
-            if data:
-                response = self._session.post(url, data=data, timeout=self._timeout)
-            elif json:
+            if json:
                 response = self._session.post(url, json=json, timeout=self._timeout)
+            else:
+                response = self._session.post(url, data=data, timeout=self._timeout)
+
+        try:
+            response = self.__class__._parse_json_data(response.content.decode('utf-8'))
+        except AttributeError as e:
+            response = {"Error": "Unknown error while parsing response"}
 
         return response
 
@@ -95,11 +119,12 @@ class Api(object):
 
         # Add extra_parameters to the query
         if extra_params and len(extra_params) > 0:
-            extra_query = self._encode_parameters(extra_params)
+            extra_query = self.__class__._encode_parameters(extra_params)
             if query:
                 query += '&' + extra_query
             else:
                 query = extra_query
+        print(url+'?'+query)
         return urlunparse((scheme, netloc, path, params, query, fragment))
 
     @staticmethod
